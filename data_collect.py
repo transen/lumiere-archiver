@@ -3,6 +3,7 @@ import hashlib
 import os
 import logging
 import json
+import ijson
 from datetime import datetime
 from pathlib import Path
 
@@ -97,11 +98,14 @@ def download_current_dataset(url, country_codes, destination):
 
 
 def read_presence_date(file_path):
-    with open(file_path, "r") as file:
-        data = json.load(file)
-
-    presence_date = data[0]["presences"][0]["presence_date"]
-    return presence_date
+    with open(file_path, "rb") as file:
+        # Use ijson to parse the file incrementally
+        parser = ijson.parse(file)
+        # Loop through the parsed JSON objects
+        for prefix, event, value in parser:
+            # We're looking for the presence_date in the given path
+            if prefix == "item.presences.item.presence_date":
+                return value
 
 
 def calculate_md5(file_path):
