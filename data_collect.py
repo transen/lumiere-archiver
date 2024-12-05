@@ -21,12 +21,13 @@ DATA_API_URL = "https://lumierevod.obs.coe.int/api/works"
 COUNTRY_CODE_API_URL = "https://lumierevod.obs.coe.int/api/countries"
 
 LAST_CHECKSUM_FILE = SCRIPT_DIR / "last_checksum.txt"
+LOG_FILE = SCRIPT_DIR / "archive.log"
 ARCHIVE_FILENAME_PREFIX = "Complete_lumiere_COE_"
 
 
 # Setup logging
 logging.basicConfig(
-    filename="data_archive.log",
+    filename=LOG_FILE,
     level=logging.INFO, # CHANGE INFO TO DEBUG TO GET MORE DETAILED LOGS
     format="%(asctime)s - %(levelname)s - %(message)s"
 )

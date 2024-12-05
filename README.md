@@ -72,7 +72,7 @@ Adjust the paths accordingly:
 
 ## Functionality
 **Logging**
-The script logs information and errors to a file named data_archive.log. You can adjust the logging level in the script (currently set to INFO, set to DEBUG for more detailed logging).
+The script logs information and errors to a file named archiver.log. You can adjust the logging level in the script (currently set to INFO, set to DEBUG for more detailed logging).
 
 **Checksum Tracking**
 The script checks for changes in the dataset by comparing the MD5 checksums of the downloaded file with the last recorded checksum. If a new dataset is detected, it is saved with a unique filename based on the presence_date.
@@ -102,4 +102,8 @@ This downloads the entire database each time it is run: please do not run it unn
 
 If you experience issues with large datasets, slow downloads or running out of memory, consider adjusting the chunk size for downloading the data. 
 
+If you experience issues with the cronjob, check the time and timezone on your server (conffirm with the `date`-command).
 
+
+## License
+This script is provided under the MIT License, and created at Aarhus University as part of the EUVoD project.   
