@@ -84,8 +84,13 @@ If you experience issues with large datasets, slow downloads or running out of m
 If you experience issues with the cronjob, check the time and timezone on your server (conffirm with the `date`-command).
 
 
+## Setting up cronjob monitoring
+To set up cronjob monitoring you need to change the constants in the top of the data_collect.py according to the descriptions in there.
+
+It uses [healthchecks.io](https://healthchecks.io/docs/monitoring_cron_jobs/), and requires a (free) account and setting up a "check", which can be configured according to your cronjob. The archiving-tool requires a UUID.
+
 ## Planned development: 
-Allow easy setup to external service to be notified of errors and new datasets.
+Allow easy setup to external service to be notified when new datasets are released.
 
 
 ## License
