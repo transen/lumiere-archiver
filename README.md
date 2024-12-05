@@ -1,26 +1,5 @@
 # LUMIERE VOD ARCHIVER
 
-This is a simple "set and forget"-script that can be set up to run independently to archive the LUMIERE VoD database by the European Audiovisual Observatory, through e.g. chronjobs.
-
-
-### OBS: This downloads the entire database each time it is run: please don't run it unnecessarily often. LUMIERE VoD has historically predominantly published new datasets 3-4 times a year. Running this once a month will surely suffice.
-
-
-## Instructions
-#TODO: Explain how this works :-) 
-
-
-
-Crontab -e
-
-## Planned development: 
-Set up external service to be notified of errors and new datasets.
-
-
-***
-
-# LUMIERE VOD ARCHIVER
-
 This script downloads the latest dataset from the [Lumiere VoD](https://lumierevod.obs.coe.int), which is a database of European (film and TV season) works available on on-demand services active in the European Union and Europe, throughts its [API](https://lumierevod.obs.coe.int/schema/redoc), and archives it to a specified directory, while also checking for any new datasets based on MD5 checksums. It runs as a cron job to automate the monthly check for and download of new data.
 
 ## Requirements
@@ -103,6 +82,10 @@ This downloads the entire database each time it is run: please do not run it unn
 If you experience issues with large datasets, slow downloads or running out of memory, consider adjusting the chunk size for downloading the data. 
 
 If you experience issues with the cronjob, check the time and timezone on your server (conffirm with the `date`-command).
+
+
+## Planned development: 
+Allow easy setup to external service to be notified of errors and new datasets.
 
 
 ## License

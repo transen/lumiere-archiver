@@ -7,6 +7,10 @@ import ijson
 from datetime import datetime
 from pathlib import Path
 
+# Set up cronjob monitoring with healthchecks.io by flipping the constant below to True, and changing the UUID from None to the UUID as a string 
+HEALTHCHECKS_CRON_MONITOR = False # True
+HEALTHCHECKS_CRON_UUID = None # "UUID1234"
+
 # Get the directory where the script is located
 SCRIPT_DIR = Path(__file__).resolve().parent
 
@@ -16,7 +20,7 @@ STORAGE_DIR = SCRIPT_DIR / "archive"
 # Create the directory if it doesn't exist
 STORAGE_DIR.mkdir(parents=True, exist_ok=True)
 
-
+# Lumiere VoD API endpoints
 DATA_API_URL = "https://lumierevod.obs.coe.int/api/works"
 COUNTRY_CODE_API_URL = "https://lumierevod.obs.coe.int/api/countries"
 
@@ -142,6 +146,12 @@ def generate_unique_filename(base_path: Path, presence_date: str, prefix: str) -
             return new_path
         counter += 1
 
+def ping_healthchecks_cron(uuid):
+    try:
+        requests.get(f"https://hc-ping.com/{uuid}", timeout=10)
+        logging.info(f"Ping sent to Healthchecks.io UUID {HEALTHCHECKS_CRON_UUID}")
+    except requests.RequestException as e:
+        logging.critical(f"Cron ping failed: {e}")
 
 
 def main():
@@ -199,6 +209,7 @@ def main():
             # Final log
             logging.info(f"New datadump downloaded to {new_path}. Checksum: {current_checksum}")
 
+        if HEALTHCHECKS_CRON_MONITOR: ping_healthchecks_cron(HEALTHCHECKS_CRON_UUID)
 
     except Exception as e:
         logging.error(f"Error occurred: {e}")
