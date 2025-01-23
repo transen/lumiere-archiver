@@ -87,11 +87,12 @@ If you experience issues with the cronjob, check the time and timezone on your s
 ## Setting up cronjob monitoring
 To set up cronjob monitoring you need to change the constants in the top of the data_collect.py according to the descriptions in there.
 
-It uses [healthchecks.io](https://healthchecks.io/docs/monitoring_cron_jobs/), and requires a (free) account and setting up a "check", which can be configured according to your cronjob. The archiving-tool requires a UUID.
+It allows use of [healthchecks.io](https://healthchecks.io/docs/monitoring_cron_jobs/), which requires a (free) account and setting up a "check", which can be configured according to your cronjob. The archiving-tool requires a UUID for the monitoring to work.
 
-## Planned development: 
-Allow easy setup to external service to be notified when new datasets are released.
+## SMTP / email alerts
+To set up email alerts of new data dumps you need to change the constants in the top of the data_collect.py file according to the description in there. 
 
+Sending email alerts with SMTP requires credentials for a SMTP server. Authentication varies between providers. You can use the email-debugger script to test your setup without checking for new datasets every time it is run. 
 
 ## License
 This script is provided under the MIT License, and created at Aarhus University as part of the EUVoD project.   

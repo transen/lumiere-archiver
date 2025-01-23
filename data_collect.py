@@ -4,12 +4,22 @@ import os
 import logging
 import json
 import ijson
+import smtplib
+from email.utils import formataddr
 from datetime import datetime
 from pathlib import Path
 
 # Set up cronjob monitoring with healthchecks.io by flipping the constant below to True, and changing the UUID from None to the UUID as a string 
 HEALTHCHECKS_CRON_MONITOR = False # True
 HEALTHCHECKS_CRON_UUID = None # "UUID1234"
+
+SMTP_NOTIFICATIONS = False # True
+# Email configuration
+SMTP_SERVER = None #"smtp.example.com"
+SMTP_PORT = None #587
+EMAIL_USER = None #"your-email@example.com"
+EMAIL_PASS = None #"your-email-password" Depending on your environment it could be good practive to put this in a secrets-file
+RECIPIENTS = None #["recipient1@example.com", "recipient2@example.com"]
 
 # Get the directory where the script is located
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -36,6 +46,38 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
+def send_email(subject, message):
+    """
+    Sends a plain-text email using smtplib.
+    
+    Args:
+        subject (str): The subject of the email.
+        message (str): The plain-text message body.
+    """
+    try:
+        # Set up the SMTP server and start TLS encryption
+
+        # Initialize SMTP connection
+        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as server:
+            #server.starttls()  # Upgrade connection to secure # OBS disable this if needed
+
+            # Log in to the SMTP server
+            server.login(EMAIL_USER, EMAIL_PASS)
+
+            # Formatted sender
+            formatted_sender = formataddr(('Lumiere Archiver', EMAIL_USER))
+            # Construct email header
+            header = f'To: {RECIPIENTS}\nFrom: {formatted_sender}\n'
+
+            # Construct the email
+            email_body = f"Subject: {subject}\n\n{message}"
+
+            # Send the email
+            server.sendmail(from_addr=EMAIL_USER, to_addrs=RECIPIENTS, msg=header+email_body) 
+            logging.info(f"Email sent successfully to {RECIPIENTS}")
+
+    except Exception as e:
+        logging.critical(f"Failed to send email: {e}")
 
 def retrieve_countrycodes(url):
     # Retrieving a list of countries from Lumiere's own DB    
@@ -191,6 +233,7 @@ def main():
         if no_new_dataset:
             # Log it
             logging.info("Checksums match: no new dataset was released. Removing newly downloaded file...")
+            if SMTP_NOTIFICATIONS: send_email(subject="Monthly LumiereVoD check: No new dataset found.", message="Lumiere-archiver checked whether a new dataset has been identified, and it was not.")
             # Remove newly downloaded dataset
             os.remove(destination_path)
         else:
@@ -207,6 +250,7 @@ def main():
             with open(LAST_CHECKSUM_FILE, "w") as f:
                 f.write(current_checksum)
             # Final log
+            if SMTP_NOTIFICATIONS: send_email(subject="Monthly LumiereVoD check: A new dataset was found!", message=f"Lumiere-archiver checked whether a new dataset has been identified, and it was!\n\nIt was archived as {new_path}")
             logging.info(f"New datadump downloaded to {new_path}. Checksum: {current_checksum}")
 
         if HEALTHCHECKS_CRON_MONITOR: ping_healthchecks_cron(HEALTHCHECKS_CRON_UUID)
