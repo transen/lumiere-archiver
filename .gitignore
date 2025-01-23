@@ -3,6 +3,9 @@ archive/
 last_checksum.txt
 archive.log
 
+# VENV
+.lumiere-venv
+
 # Mac
 .DS_Store
 
